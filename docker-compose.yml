@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+
+  web:
+    build:
+      context: ./backend
+      dockerfile: ./DOCKERFILE
+    image: aceplaceweb
+    command: python main.py
+    container_name: fastapi
+    env_file:
+      - ./environments/db.env
+      - ./environments/backend.env
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - db
+    networks:
+      - web-app
+  
+  db:
+    image: mongo:latest
+    container_name: "${MONGODB_HOST}"
+    env_file:
+      - ./environments/db.env
+    ports: 
+      - "${MONGODB_PORT}:${MONGODB_PORT}"
+    volumes:
+      - mongo-data:/data/db
+      - mongo-log:/var/log/mongodb
+    restart: always
+    networks:
+      - web-app
+
+volumes:
+  mongo-data:
+    driver: local
+  mongo-log:
+    driver: local
+
+networks:
+  web-app:
+    driver: bridge

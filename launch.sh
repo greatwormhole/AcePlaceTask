@@ -1,0 +1,1 @@
+docker compose --env-file ./environments/db.env --env-file ./environments/backend.env up --build
