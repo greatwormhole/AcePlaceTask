@@ -1,1 +1,1 @@
-docker compose --env-file ./environments/db.env --env-file ./environments/backend.env up --build
+docker compose -f ./docker/docker-compose.yml --env-file ./docker/environments/db.env --env-file ./docker/environments/backend.env up --build

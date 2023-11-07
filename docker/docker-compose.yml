@@ -1,10 +1,10 @@
-version: "3.7"
+version: "3.8"
 
 services:
 
   web:
     build:
-      context: ./backend
+      context: ../backend/
       dockerfile: ./DOCKERFILE
     image: aceplaceweb
     command: python main.py
@@ -14,6 +14,8 @@ services:
       - ./environments/backend.env
     ports:
       - "${PORT}:${PORT}"
+    volumes:
+      - ../backend/:/usr/src/backend
     depends_on:
       - db
     networks:
@@ -29,7 +31,9 @@ services:
     volumes:
       - mongo-data:/data/db
       - mongo-log:/var/log/mongodb
-    restart: always
+      - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./scripts/script.sh:/docker-entrypoint-initdb.d/script.sh:ro
+    restart: on-failure
     networks:
       - web-app
 
@@ -41,4 +45,5 @@ volumes:
 
 networks:
   web-app:
+    name: web-app
     driver: bridge
